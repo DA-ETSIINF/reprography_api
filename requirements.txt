@@ -1,5 +1,7 @@
+django-rest-framework
+djangorestframework-jwt
 django
 PyPDF2
 django-cors-headers
-
+djoser
 
