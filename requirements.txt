@@ -1,0 +1,5 @@
+django
+PyPDF2
+django-cors-headers
+
+
