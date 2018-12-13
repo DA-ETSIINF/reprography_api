@@ -4,17 +4,13 @@ import requests
 
 
 from django.core.mail import EmailMessage
-
-
-from django.shortcuts import render
 import os
-from PyPDF2 import PdfFileReader
+
 # Create your views here.
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.utils import json
 
 from printapi.models import File, Folder, History
 from printapi.serializers import FilesSerializer, UserFilesSerializer, HomeSerializer, HistorySerializer
@@ -119,4 +115,3 @@ class PrintDocument(CreateAPIView):
             return Response({'response': 'Printing document'}, status=status.HTTP_200_OK)
         return Response({'response': 'Incorrect data'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-## Createfolder
