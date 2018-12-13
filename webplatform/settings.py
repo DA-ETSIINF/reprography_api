@@ -179,7 +179,7 @@ JWT_AUTH = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 MEDIA_ROOT = 'media'
-MEDIA_URL = "http://192.168.0.112:8000" + os.path.join(BASE_DIR, '/media/')
+MEDIA_URL = "http://192.168.1.243:8000" + os.path.join(BASE_DIR, '/media/')
 
 
 # Use  whitelist

@@ -1,5 +1,8 @@
 import datetime
 import math
+import requests
+
+
 from django.core.mail import EmailMessage
 
 
@@ -11,6 +14,7 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.utils import json
 
 from printapi.models import File, Folder, History
 from printapi.serializers import FilesSerializer, UserFilesSerializer, HomeSerializer, HistorySerializer
@@ -70,7 +74,12 @@ class PrintDocument(CreateAPIView):
             user = self.request.user
             document_id = self.request.data['documentId']
             try:
-                double_sided = True if self.request.data['doubleSided'] == 'true' else False
+                color = True if self.request.data['color'] == 'true' else False
+            except:
+                color = False
+            try:
+                double_sided = True if self.request.data['doubleSided'] == 'true' else False # fix this, dont need to set value this way
+
             except:
                 double_sided = False
             file = File.objects.get(id=document_id)
@@ -83,13 +92,29 @@ class PrintDocument(CreateAPIView):
             History.objects.create(
                 user=user,
                 documentId=file,
+                color=color,
                 npages=npages,
                 amount=topay,
                 doubleSided=double_sided,
                 date=date,
             )
             #file.create()
-            mail(file.name, file.file.read())
+            if color:
+                mail(file.name, file.file.read())
+            else:
+                from webplatform.settings_secret import PRINT_SERVER, PRINT_PASSWORD, PRINT_USERNAME
+
+                post_data = [{
+                        "username": PRINT_USERNAME,
+                        "password": PRINT_PASSWORD,
+                        "url": str(file.file.url),
+                        "filename": str(file.name),
+                      }]
+                requests.post(str(PRINT_SERVER), json=post_data)
+
+
+
+
 
             return Response({'response': 'Printing document'}, status=status.HTTP_200_OK)
         return Response({'response': 'Incorrect data'}, status=status.HTTP_406_NOT_ACCEPTABLE)

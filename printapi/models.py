@@ -47,6 +47,7 @@ class History(models.Model):
     date = models.DateTimeField(default=datetime.datetime.now, blank=True)
     documentId = models.ForeignKey(File, on_delete=models.PROTECT, default=0)
     npages = models.IntegerField()
+    color = models.BooleanField(default=False)
     amount = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.PROTECT, default=1)
     doubleSided = models.BooleanField(default=False)
