@@ -25,7 +25,7 @@ class HomeSerializer(ModelSerializer):
     folders = serializers.SerializerMethodField()
 
     def get_folders(self, folder):
-        print("folder" + str(folder.id))
+
         query = Folder.objects.all().filter(owner=self.context['request'].user,  folder=folder.id)
         return FolderSerializer(query.prefetch_related().all(),  many=True, context=self.context).data
 
