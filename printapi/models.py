@@ -6,6 +6,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class Funds(models.Model):
     amount = models.FloatField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, )

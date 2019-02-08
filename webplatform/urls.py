@@ -24,7 +24,8 @@ urlpatterns = [
     path(r'auth/', include('djoser.urls')),
     path(r'auth/', include('djoser.urls.authtoken')),
     path('print/', include('printapi.urls')),
-    path('user/', include('users.urls')),
+    path('user/', include('users.urls'), name="send-to-printer")
+
 
 ]
 urlpatterns += static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)

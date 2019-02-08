@@ -7,6 +7,6 @@ urlpatterns = [
     path('', HomeView.as_view(), name="print-index"),
     path('files/', HomeView.as_view(),  name="print-documents"),
     path('upload/', CreateFileView.as_view(), name="print-documents"),
-    path('send-to-printer/', PrintDocument.as_view(),  name="send-to-printer")
+    path('send-to-printer/', PrintDocument.as_view(),  name="send-to-printer"),
 
 ]
