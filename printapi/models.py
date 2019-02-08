@@ -43,19 +43,12 @@ class File(models.Model):
 
 
 
-class FundTransaction(models.Model):
-    found = models.ForeignKey(User, on_delete=models.CASCADE, )
-    #tipos
-    type = models.CharField(max_length=30) # must be select options
-    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
-    amount = models.FloatField()
-    file = models.ForeignKey(Folder, blank=True, null=True, on_delete=models.PROTECT, default=0)
-
 
 class History(models.Model):
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
     documentId = models.ForeignKey(File, on_delete=models.PROTECT, default=0)
     npages = models.IntegerField()
+    color = models.BooleanField(default=False)
     amount = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.PROTECT, default=1)
     doubleSided = models.BooleanField(default=False)

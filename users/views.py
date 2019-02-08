@@ -14,4 +14,3 @@ class UserProfile(ListAPIView):
 
     def get_queryset(self):
         return User.objects.all().filter(id=self.request.user.id)
-

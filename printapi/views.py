@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 import math
 
 from django.contrib.sites import requests
 from django.core.mail import EmailMessage
+=======
+
+import math
+import requests
+>>>>>>> 749bd73b7fb165f56318d6d949750a6e50c87433
 
 
-from django.shortcuts import render
+from django.core.mail import EmailMessage
 import os
-from PyPDF2 import PdfFileReader
+
 # Create your views here.
 from django.utils.datetime_safe import datetime
 from rest_framework import status
@@ -75,11 +81,10 @@ class PrintDocument(CreateAPIView):
             except:
                 color = False
             try:
-                double_sided = True if self.request.data[
-                                           'doubleSided'] == 'true' else False  # fix this, dont need to set value this way
+                double_sided = True if self.request.data['doubleSided'] == 'true' else False # fix this, dont need to set value this way
 
             except:
-                double_sided = False
+                    double_sided = False
             file = File.objects.get(id=document_id)
             npages = file.npages
             date = datetime.now()
@@ -96,21 +101,21 @@ class PrintDocument(CreateAPIView):
                 doubleSided=double_sided,
                 date=date,
             )
-            # file.create()
-            if color:
-                # mail(file.name, file.file.read())
-                print("color")
-                pass
 
+            #file.create()
+            if color:
+               # mail(file.name, file.file.read())
+               print("color")
+               pass
             else:
                 from webplatform.settings_secret import PRINT_SERVER, PRINT_PASSWORD, PRINT_USERNAME
 
                 post_data = [{
-                    "username": PRINT_USERNAME,
-                    "password": PRINT_PASSWORD,
-                    "url": str(file.file.url),
-                    "filename": str(file.name),
-                }]
+                        "username": PRINT_USERNAME,
+                        "password": PRINT_PASSWORD,
+                        "url": str(file.file.url),
+                        "filename": str(file.name),
+                      }]
                 try:
                     print(PRINT_SERVER)
                     requests.post(PRINT_SERVER, json=post_data)
@@ -118,4 +123,7 @@ class PrintDocument(CreateAPIView):
 
                     return Response({'response': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-## Createfolder
+            return Response({'response': 'Printing document'}, status=status.HTTP_200_OK)
+        return Response({'response': 'Incorrect data'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
