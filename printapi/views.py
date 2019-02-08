@@ -1,5 +1,6 @@
-import datetime
 import math
+
+from django.contrib.sites import requests
 from django.core.mail import EmailMessage
 
 
@@ -7,6 +8,7 @@ from django.shortcuts import render
 import os
 from PyPDF2 import PdfFileReader
 # Create your views here.
+from django.utils.datetime_safe import datetime
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -58,7 +60,6 @@ def mail(pdfname, pdf):
     email.send()
 
 class PrintDocument(CreateAPIView):
-
     permission_classes = [IsAuthenticated]
     serializer_class = HistorySerializer
     queryset = History.objects.all()
@@ -70,28 +71,51 @@ class PrintDocument(CreateAPIView):
             user = self.request.user
             document_id = self.request.data['documentId']
             try:
-                double_sided = True if self.request.data['doubleSided'] == 'true' else False
+                color = True if self.request.data['color'] == 'true' else False
+            except:
+                color = False
+            try:
+                double_sided = True if self.request.data[
+                                           'doubleSided'] == 'true' else False  # fix this, dont need to set value this way
+
             except:
                 double_sided = False
             file = File.objects.get(id=document_id)
             npages = file.npages
-            date = datetime.datetime.now()
+            date = datetime.now()
             # We use the npages of a document to retrieve the amount to pay.
-            topay =  math.ceil(npages / 2) * 0.4 if double_sided else npages * 0.4
+            topay = math.ceil(npages / 2) * 0.4 if double_sided else npages * 0.4
             # they only have to pay for sheet, so if they print double sided, a sheet is 2 sided.
 
             History.objects.create(
                 user=user,
                 documentId=file,
+                color=color,
                 npages=npages,
                 amount=topay,
                 doubleSided=double_sided,
                 date=date,
             )
-            #file.create()
-            mail(file.name, file.file.read())
+            # file.create()
+            if color:
+                # mail(file.name, file.file.read())
+                print("color")
+                pass
 
-            return Response({'response': 'Printing document'}, status=status.HTTP_200_OK)
-        return Response({'response': 'Incorrect data'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            else:
+                from webplatform.settings_secret import PRINT_SERVER, PRINT_PASSWORD, PRINT_USERNAME
+
+                post_data = [{
+                    "username": PRINT_USERNAME,
+                    "password": PRINT_PASSWORD,
+                    "url": str(file.file.url),
+                    "filename": str(file.name),
+                }]
+                try:
+                    print(PRINT_SERVER)
+                    requests.post(PRINT_SERVER, json=post_data)
+                except Exception as e:
+
+                    return Response({'response': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ## Createfolder
