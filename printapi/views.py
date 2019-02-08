@@ -1,4 +1,4 @@
-import datetime
+
 import math
 import requests
 
@@ -7,6 +7,7 @@ from django.core.mail import EmailMessage
 import os
 
 # Create your views here.
+from django.utils.datetime_safe import datetime
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -80,7 +81,7 @@ class PrintDocument(CreateAPIView):
                 double_sided = False
             file = File.objects.get(id=document_id)
             npages = file.npages
-            date = datetime.datetime.now()
+            date = datetime.now()
             # We use the npages of a document to retrieve the amount to pay.
             topay =  math.ceil(npages / 2) * 0.4 if double_sided else npages * 0.4
             # they only have to pay for sheet, so if they print double sided, a sheet is 2 sided.
@@ -96,7 +97,10 @@ class PrintDocument(CreateAPIView):
             )
             #file.create()
             if color:
-                mail(file.name, file.file.read())
+               # mail(file.name, file.file.read())
+               print("color")
+               pass
+
             else:
                 from webplatform.settings_secret import PRINT_SERVER, PRINT_PASSWORD, PRINT_USERNAME
 
@@ -106,7 +110,13 @@ class PrintDocument(CreateAPIView):
                         "url": str(file.file.url),
                         "filename": str(file.name),
                       }]
-                requests.post(str(PRINT_SERVER), json=post_data)
+                try:
+                    print(PRINT_SERVER)
+                    requests.post(PRINT_SERVER, json=post_data)
+                except Exception as e:
+
+                    return Response({'response': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
