@@ -9,14 +9,12 @@ class UserSerializer(ModelSerializer):
 
     funds = serializers.SerializerMethodField()
 
-    def get_funds(self, folder):
-        print(folder.id)
-        query = Funds.objects.all().filter(owner=self.context['request'].user)
-        return query.values('amount')[0]['amount'] if len(query) != 0 else 0.0
+    def get_funds(self, user):
+        return Funds.objects.all().filter(owner=user)[0].amount
 
     class Meta:
-        model= User
-        fields= ('id', 'username', 'email', 'funds', )
+        model = User
+        fields = ('id', 'username', 'email', 'funds')
 
 
 
