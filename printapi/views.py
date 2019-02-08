@@ -1,13 +1,12 @@
-<<<<<<< HEAD
+
 import math
 
 from django.contrib.sites import requests
 from django.core.mail import EmailMessage
-=======
+
 
 import math
 import requests
->>>>>>> 749bd73b7fb165f56318d6d949750a6e50c87433
 
 
 from django.core.mail import EmailMessage
