@@ -8,3 +8,4 @@ admin.site.register(Folder),
 admin.site.register(History),
 admin.site.register(Funds),
 
+

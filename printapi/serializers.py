@@ -39,7 +39,7 @@ class HistorySerializer(ModelSerializer):
 
     class Meta:
         model = History
-        fields = ('documentId', 'doubleSided')
+        fields = ('documentId', 'doubleSided', 'color')
 
 
 
